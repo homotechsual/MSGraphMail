@@ -10,6 +10,31 @@ You will need the following:
 4. [**PowerShell 7**](https://aka.ms/powershell-release?tag=stable) installed on your Windows, Linux or MacOS device.
 5. The code from this module in your PowerShell modules folder find this by running `$env:PSModulePath` in your PowerShell 7 session.
 
+## Connecting to the Microsoft Graph API
+
+Connecting to the Microsoft Graph API uses the Azure AD Application information and the Connect-MSGraphMail client application.
+
+Using the **Splatting** technique:
+
+Splatting is a system in PowerShell that lets us put our parameters in a nicely formatted easy to read object (a HashTable to be specific!) and then "splat" them at the command. To do this, first things first setup a PowerShell object to hold your credentials. For example:
+
+```powershell
+$MSGraphMailConnectionParameters = @{
+    ApplicationID = '<YOUR APPLICATION ID>'
+    ApplicationSecret = '<YOUR APPLICATION SECRET>'
+    TenantID = '<YOUR TENANT ID>'
+}
+Connect-MSGraphMail @MSGraphMailConnectionParameters
+```
+
+Using the **Traditional** technique:
+
+If you don't want to - or can't "splat" - we can fall back on a more traditional route:
+
+```powershell
+Connect-MSGraphMail -ApplicationID '<YOUR APPLICATION ID>' -ApplicationSecret '<YOUR APPLICATION SECRET>' -TenantID '<YOUR TENANT ID>'
+```
+
 ## Getting Emails
 
 Getting emails hinges around a single command `Get-MSGraphMail` at it's most basic this looks like this.
