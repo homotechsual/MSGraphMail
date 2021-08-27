@@ -24,9 +24,9 @@ Splatting is a system in PowerShell that lets us put our parameters in a nicely 
 
 ```powershell
 $MSGraphMailConnectionParameters = @{
-    ApplicationID = '<YOUR APPLICATION ID>'
-    ApplicationSecret = '<YOUR APPLICATION SECRET>'
-    TenantID = '<YOUR TENANT ID>'
+    ApplicationID = '<YOUR APPLICATION ID>'
+    ApplicationSecret = '<YOUR APPLICATION SECRET>'
+    TenantID = '<YOUR TENANT ID>'
 }
 Connect-MSGraphMail @MSGraphMailConnectionParameters
 ```
@@ -36,7 +36,7 @@ Using the **Traditional** technique:
 If you don't want to - or can't "splat" - we can fall back on a more traditional route:
 
 ```powershell
-Connect-MSGraphMail -ApplicationID '<YOUR APPLICATION ID>' -ApplicationSecret '<YOUR APPLICATION SECRET>' -TenantID '<YOUR TENANT ID>'
+Connect-MSGraphMail -ApplicationID '<YOUR APPLICATION ID>' -ApplicationSecret '<YOUR APPLICATION SECRET>' -TenantID '<YOUR TENANT ID>'
 ```
 
 ## Getting Emails
