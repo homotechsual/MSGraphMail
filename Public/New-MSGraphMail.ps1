@@ -55,10 +55,18 @@ function New-MSGraphMail {
             $MailParams.isReadReceiptRequested = $true
         }
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
-        if ($Folder) {
-            $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/mailfolders/$($Folder)/messages"
+        if ($Send) {
+            if ($Folder) {
+                $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/mailfolders/$($Folder)/messages/send"
+            } else {
+                $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/messages/send"
+            }
         } else {
-            $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/messages"
+            if ($Folder) {
+                $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/mailfolders/$($Folder)/messages"
+            } else {
+                $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/messages"
+            }
         }
         $POSTRequestParams = @{
             URI = $RequestURI.ToString()
@@ -87,14 +95,6 @@ function New-MSGraphMail {
             Return $Result
         } elseif ($Message) {
             Return $Message
-        }
-        if ($Send) {
-            $SendParams = @{
-                id = $($Message).id
-                mailbox = $MailFrom.EmailAddress.Address
-                folder = $($Message).parentFolderId
-            }
-            $SendParams | Send-MSGraphMail
         }
     } catch {
         $Command = $CommandName -Replace '-', ''
