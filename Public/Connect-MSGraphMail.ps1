@@ -66,7 +66,7 @@ function Connect-MSGraphMail {
                     ErrorDetails = $_.ErrorDetails
                     BubbleUpDetails = $True
                 }
-                $RequestError = New-HaloErrorRecord @ErrorRecord
+                $RequestError = New-MSGraphErrorRecord @ErrorRecord
                 $PSCmdlet.ThrowTerminatingError($RequestError)
             }
         }

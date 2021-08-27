@@ -10,6 +10,10 @@ You will need the following:
 4. [**PowerShell 7**](https://aka.ms/powershell-release?tag=stable) installed on your Windows, Linux or MacOS device.
 5. The code from this module in your PowerShell modules folder find this by running `$env:PSModulePath` in your PowerShell 7 session.
 
+## Import the Module
+
+Run `Import-Module 'MSGraphMail'` to load the module into your current session.
+
 ## Connecting to the Microsoft Graph API
 
 Connecting to the Microsoft Graph API uses the Azure AD Application information and the Connect-MSGraphMail client application.
