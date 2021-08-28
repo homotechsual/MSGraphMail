@@ -87,40 +87,40 @@ function Get-MSGraphMail {
                 Return $Result
             }
         }
-        
-        if ($Pipeline -and $Content) {
-            $Result = [PSCustomObject]@{
-                id = $($Content).value.id
-                mailbox = $($Content).value.toRecipients.emailAddress.address
-                folder = $($Content).value.parentFolderId
+        if ($Content.value) {
+            if ($Pipeline) {
+                $Result = [PSCustomObject]@{
+                    id = $($Content).value.id
+                    mailbox = $($Content).value.toRecipients.emailAddress.address
+                    folder = $($Content).value.parentFolderId
+                }
+                Return $Result
+            } elseif ($Summary) {
+                $Content.value | ForEach-Object {
+                    $_.PSTypeNames.Insert(0, 'MSGraphMailSummary')
+                    if ($_.from) {
+                        $fromValue = Invoke-EmailObjectParser $_.from
+                        $_.PSObject.Properties.Add(
+                            [PSNoteProperty]::New('fromString', $fromValue)
+                        )
+                    }
+                    if ($_.toRecipients) {
+                        $toValue = Invoke-EmailObjectParser $_.toRecipients
+                        $_.PSObject.Properties.Add(
+                            [PSNoteProperty]::New('toString', $toValue)
+                        )
+                    }
+                    if ($_.ccRecipients) {
+                        $ccValue = Invoke-EmailObjectParser $_.ccRecipients
+                        $_.PSObject.Properties.Add(
+                            [PSNoteProperty]::New('ccString', $ccValue)
+                        )
+                    }
+                }
+                Return $Content.value
+            } elseif ($Content.value) {
+                Return $Content.value
             }
-            Return $Result
-        } elseif ($Summary -and ($Content.value)) {
-            $Content.value | ForEach-Object {
-                $_.PSTypeNames.Insert(0, 'MSGraphMailSummary')
-                if ($_.from) {
-                    $fromValue = Invoke-EmailObjectParser $_.from
-                    $_.PSObject.Properties.Add(
-                        [PSNoteProperty]::New('fromString', $fromValue)
-                    )
-                }
-                if ($_.toRecipients) {
-                    $toValue = Invoke-EmailObjectParser $_.toRecipients
-                    $_.PSObject.Properties.Add(
-                        [PSNoteProperty]::New('toString', $toValue)
-                    )
-                }
-                if ($_.ccRecipients) {
-                    $ccValue = Invoke-EmailObjectParser $_.ccRecipients
-                    $_.PSObject.Properties.Add(
-                        [PSNoteProperty]::New('ccString', $ccValue)
-                    )
-                }
-            }
-            Return $Content.value
-        } elseif ($Content.value) {
-            $Result = $($Content.value)
-            Return $Result
         }
     } catch {
         $ErrorRecord = @{
