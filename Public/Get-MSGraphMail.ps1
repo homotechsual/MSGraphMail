@@ -1,3 +1,4 @@
+using namespace System.Management.Automation
 function Get-MSGraphMail {
     [CmdletBinding()]
     param (
@@ -23,13 +24,20 @@ function Get-MSGraphMail {
         # Search for emails based on a string.
         [Parameter(ParameterSetName = 'Multi')]
         [string]$Search,
+        # Selects the specified properties.
+        [Parameter(ParameterSetName = 'Multi')]
+        [Parameter(ParameterSetName = 'Single')]
+        [string[]]$Select,
         # Return this number of results.
         [Parameter(ParameterSetName = 'Multi')]
         [int]$PageSize = 500,
         # Transform the output into an object suitable for piping to other commands.
         [Parameter(ParameterSetName = 'Multi')]
         [Parameter(ParameterSetName = 'Single')]
-        [switch]$Pipeline
+        [switch]$Pipeline,
+        # Transform the output into a summary format.
+        [Parameter(ParameterSetName = 'Multi')]
+        [switch]$Summary
     )
     try {
         $QueryStringCollection = [system.web.httputility]::ParseQueryString([string]::Empty)
@@ -41,6 +49,12 @@ function Get-MSGraphMail {
         }
         if (($PageSize) -and ($PSCmdlet.ParameterSetName -ne 'Single')) {
             $QueryStringCollection.Add('$top', $PageSize)
+        }
+        if ($Select) {
+            if ($Select.Length -gt 1) { 
+                $Select = $Select -join ','
+            }
+            $QueryStringCollection.Add('$select', $Select)
         }
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($MessageID) {
@@ -73,6 +87,7 @@ function Get-MSGraphMail {
                 Return $Result
             }
         }
+        
         if ($Pipeline -and $Content) {
             $Result = [PSCustomObject]@{
                 id = $($Content).value.id
@@ -80,6 +95,29 @@ function Get-MSGraphMail {
                 folder = $($Content).value.parentFolderId
             }
             Return $Result
+        } elseif ($Summary -and ($Content.value)) {
+            $Content.value | ForEach-Object {
+                $_.PSTypeNames.Insert(0, 'MSGraphMailSummary')
+                if ($_.from) {
+                    $fromValue = Invoke-EmailObjectParser $_.from
+                    $_.PSObject.Properties.Add(
+                        [PSNoteProperty]::New('fromString', $fromValue)
+                    )
+                }
+                if ($_.toRecipients) {
+                    $toValue = Invoke-EmailObjectParser $_.toRecipients
+                    $_.PSObject.Properties.Add(
+                        [PSNoteProperty]::New('toString', $toValue)
+                    )
+                }
+                if ($_.ccRecipients) {
+                    $ccValue = Invoke-EmailObjectParser $_.ccRecipients
+                    $_.PSObject.Properties.Add(
+                        [PSNoteProperty]::New('ccString', $ccValue)
+                    )
+                }
+            }
+            Return $Content.value
         } elseif ($Content.value) {
             $Result = $($Content.value)
             Return $Result

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>MSGraphMailSummary</Name>
+            <ViewSelectedBy>
+                <TypeName>MSGraphMailSummary</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <Label>Subject</Label>
+                                <PropertyName>subject</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Message ID</Label>
+                                <PropertyName>id</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>From</Label>
+                                <PropertyName>fromString</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>To</Label>
+                                <PropertyName>toString</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Received</Label>
+                                <PropertyName>receivedDateTime</PropertyName>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
