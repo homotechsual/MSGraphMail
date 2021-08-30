@@ -67,6 +67,8 @@ You can get more specific with the following parameters:
 * **Search** - Searches emails based on a string.
 * **PageSize** - Retrieves only the given number of results.
 * **Pipeline** - Formats the output for Pipelining to other commands - like `Move-MSGraphMail` or `Delete-MSGraphMail`.
+* **Select** - Retrieves only the specified fields from the Graph API.
+* **Summary** - Displays a summary of the message(s) retrieved. See #1 for details.
 
 ## Creating an E-Mail
 
