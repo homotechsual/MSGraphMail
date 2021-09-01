@@ -9,10 +9,10 @@ function New-MSGraphMailBody {
         [string]$FooterContent
     )
     if (Test-Path $BodyContent) {
-        $MailContent = (Get-Content $BodyContent)
+        $MailContent = (Get-Content $BodyContent -Raw)
     }
     if (Test-Path $FooterContent) {
-        $MailFooter = (Get-Content $FooterContent)
+        $MailFooter = (Get-Content $FooterContent -Raw)
     }
     $MailBody = @{
         content = "$($MailContent)$([System.Environment]::NewLine)$($MailFooter)"
