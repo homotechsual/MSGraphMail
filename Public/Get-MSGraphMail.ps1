@@ -124,7 +124,7 @@ function Get-MSGraphMail {
         }
     } catch {
         $ErrorRecord = @{
-            ExceptionType = 'System.Net.Http.HttpRequestException'
+            ExceptionType = 'System.Exception'
             ErrorMessage = "Microsoft Graph API request $($_.TargetObject.Method) $($_.TargetObject.RequestUri) failed."
             InnerException = $_.Exception
             ErrorID = 'MicrosoftGraphRequestFailed'

@@ -62,7 +62,7 @@ function Invoke-MSGraphWebRequest {
         if ($Body -and (($Method -eq 'POST') -or ($Method -eq 'PUT'))) {
             $WebRequestParams.Body = $Body
         }
-        $Response = Invoke-WebRequest @WebRequestParams 
+        $Response = Invoke-WebRequest @WebRequestParams
         Write-Debug "Response headers: $($Response.Headers | Out-String)"
         Write-Debug "Raw response: $($Response | Out-String -Width 5000)"
         return $Response

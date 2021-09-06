@@ -25,7 +25,6 @@ function New-MSGraphMail {
     try {
         $CommandName = $MyInvocation.InvocationName
         $MailFrom = Invoke-EmailStringParser -Strings $From
-        Write-CustomMessage -Message "$(@($To))" -Type 'Information'
         $MailTo = Invoke-EmailStringParser -Strings @($To)
         if ($CC) {
             $MailCC = Invoke-EmailStringParser -Strings @($CC)

@@ -36,12 +36,16 @@ function New-MSGraphErrorRecord {
     if ($Response) {
         $ExceptionMessage.Add("The Microsoft Graph API provided the status code $($Response.StatusCode.Value__): $($Response.ReasonPhrase).")
     }
+    $Exception = $ExceptionType::New(
+        $ExceptionMessage,
+        $InnerException
+    )
+    #if (($Exception -and ($ExceptionType -is 'Microsoft.PowerShell.Commands.HttpResponseException')) -and $Response) {
+    #    $Exception.Response = $Response
+    #}
     $ExceptionMessage.Add('You can use "Get-Error" for detailed error information.')
     $MSGraphError = [ErrorRecord]::New(
-        $ExceptionType::New(
-            $ExceptionMessage,
-            $InnerException
-        ),
+        $Exception,
         $ErrorID,
         $ErrorCategory,
         $TargetObject

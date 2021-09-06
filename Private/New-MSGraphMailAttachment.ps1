@@ -38,6 +38,7 @@ function New-MSGraphMailAttachment {
         }
         if ($CID) {
             $AttachmentItem.AttachmentItem.contentID = $CID
+            $AttachmentItem.AttachmentItem.isInline = $True
         }
         Write-Debug "Generated attachment item $($AttachmentItem | ConvertTo-JSON)"
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
@@ -57,6 +58,8 @@ function New-MSGraphMailAttachment {
                 }
                 try {
                     $UploadTry++
+                    $InternalServerError = $False
+                    Write-CustomMessage "Attempting to upload $($AttachmentFile.FullName) attempt number $($UploadTry)" -Type 'Information'
                     $AttachmentSession = New-MSGraphMailPOSTRequest @UploadSessionParams
                     Write-Debug "Got upload session details $($AttachmentSession)"
                     $AttachmentSessionURI = $AttachmentSession.uploadurl
@@ -88,10 +91,12 @@ function New-MSGraphMailAttachment {
                     try {
                         $AttachmentUpload = New-MSGraphMailPUTRequest @AttachmentUploadParams
                         if ($AttachmentUpload) {
-                            Write-CustomMessage -Message "Attached file  to message $($MessageID)" -Type 'Success'
+                            $InternalServerError = $False
+                            Write-CustomMessage -Message "Attached file '$($AttachmentFile.FullName)' to message $($MessageID)" -Type 'Success'
                         }
                     } catch {
-                        if ($_.Exception.InnerException.Response.StatusCode.Value__ -eq 500) {
+                        if ($_.Exception.InnerException.InnerException.Response.StatusCode.value__ -eq 500) {
+                            Write-Warning "Attempt to upload '$($AttachmentFile.FullName)' failed. Retrying."
                             $InternalServerError = $True
                         } else {
                             $ErrorRecord = @{
