@@ -15,6 +15,7 @@ function New-MSGraphMail {
         [string]$BodyFormat,
         [String]$Folder,
         [String[]]$Attachments,
+        [String[]]$InlineAttachments,
         [Switch]$Draft,
         [Switch]$RequestDeliveryReceipt,
         [Switch]$RequestReadReceipt,
@@ -77,6 +78,15 @@ function New-MSGraphMail {
                 Attachments = $Attachments
             }
             New-MSGraphMailAttachment @AttachmentParams | Out-Null
+        }
+        if ($InlineAttachments) {
+            $InlineAttachmentParams = @{
+                Mailbox = $MailFrom.EmailAddress.Address
+                MessageID = $Message.id
+                Attachments = $Attachments
+                InlineAttachments = $True
+            }
+            New-MSGraphMailAttachment @InlineAttachmentParams | Out-Null
         }
         if ($Pipeline -and $Message) {
             $Result = [PSCustomObject]@{

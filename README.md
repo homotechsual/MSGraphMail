@@ -99,7 +99,27 @@ If this works we'll see:
 
 > SUCCESS: Created message 'Your invoice #1234 is ready.' with ID AAMkADg0MTI1YTY5LTZhNTAtNGY2Ni1iYmFmLTYyNTIxNmQ3ZTAyMQBGAAAAAADcjV4oGXn1Sb6mQOgHYL6tBwAynr9oS8bwR42_Ec20-qUkAAAAAAEQAAAynr9oS8bwR42_Ec20-qUkAAcuZgfeAAA=
 
-A draft email will have appeared in the account provided to `From`.
+A draft email will have appeared in the account provided to `From`. Unless you specify the `-Send` parameter which immediately sends the email bypassing the draft creation.
+
+You can use inline attachments by using `-InlineAttachments` and specifying attachments in the format `'cid;filepath'` e.g:
+
+```powershell
+New-MSGraphMail -From 'You <you@example.uk>' -To 'Them <them@example.com>', 'Someone <someone@example.com>' -Subject 'Your invoice #1234 is ready.' -BodyContent 'X:\Emails\BodyContent.html' -FooterContent 'X:\Emails\FooterContent.html' -Attachments 'X:\Files\SendtoExample.docx','X:\Files\SendToExample.zip' -BodyFormat 'html' -InlineAttachments 'signaturelogo;X\Common\EmailSignatureLogo.png', 'productlogo;X:\Products\Widgetiser\WidgetiserLogoEmail.png'
+```
+
+The two inline attachments would map to:
+
+```html
+<img alt="Our Logo" src="cid:signaturelogo"/>
+```
+
+and
+
+```html
+<img alt="Widgetiser Logo" src="cid:productlogo"/>
+```
+
+respectively.
 
 ## Sending an E-Mail
 
