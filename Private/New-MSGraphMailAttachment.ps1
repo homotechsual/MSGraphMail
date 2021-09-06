@@ -42,6 +42,7 @@ function New-MSGraphMailAttachment {
         Write-Debug "Generated attachment item $($AttachmentItem | ConvertTo-JSON)"
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($UploadSession) {
+            $UploadTry = 0
             do {
                 if ($Folder) {
                     $RequestURI.Path = "v1.0/users/$($Mailbox)/mailFolders/$($Folder)/messages/$($MessageID)/attachments/createUploadSession"
@@ -55,6 +56,7 @@ function New-MSGraphMailAttachment {
                     Raw = $False
                 }
                 try {
+                    $UploadTry++
                     $AttachmentSession = New-MSGraphMailPOSTRequest @UploadSessionParams
                     Write-Debug "Got upload session details $($AttachmentSession)"
                     $AttachmentSessionURI = $AttachmentSession.uploadurl
@@ -107,7 +109,7 @@ function New-MSGraphMailAttachment {
                         }
                     }
                 } 
-            } while ($InternalServerError)
+            } while (($InternalServerError) -and ($UploadTry -le 5))
         } else {
             if ($Folder) {
                 $RequestURI.Path = "v1.0/users/$($Mailbox)/mailFolders/$($Folder)/messages/$($MessageID)/attachments"
