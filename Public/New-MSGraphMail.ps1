@@ -83,7 +83,7 @@ function New-MSGraphMail {
             $InlineAttachmentParams = @{
                 Mailbox = $MailFrom.EmailAddress.Address
                 MessageID = $Message.id
-                Attachments = $Attachments
+                Attachments = $InlineAttachments
                 InlineAttachments = $True
             }
             New-MSGraphMailAttachment @InlineAttachmentParams | Out-Null
