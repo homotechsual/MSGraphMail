@@ -15,7 +15,9 @@ function New-MSGraphMailAttachment {
         if ($InlineAttachments) {
             $IAParts = $AttachmentItem.Split(';')
             $CID = $IAParts[0]
+            Write-Verbose ("Content ID: $CID")
             $Attachment = $IAParts[1]
+            Write-Verbose ("Attachment: $Attachment")
         } else {
             $Attachment = $AttachmentItem
         }
@@ -30,15 +32,22 @@ function New-MSGraphMailAttachment {
             $UploadSession = $True
         }
         $AttachmentItem = @{
-            AttachmentItem = @{
-                attachmentType = "file"
-                name = $AttachmentFile.Name
-                size = $($Bytes.Length)
-            }
+            "@odata.type" = "#microsoft.graph.fileAttachment"
+            attachmentType = 'file'
+            name = $AttachmentFile.Name
         }
         if ($CID) {
-            $AttachmentItem.AttachmentItem.contentID = $CID
-            $AttachmentItem.AttachmentItem.isInline = $True
+            $AttachmentItem.contentId = $CID
+            $AttachmentItem.isInline = $True
+            if ($AttachmentFile.Extension -eq '.png') {
+                $AttachmentItem.contentType = 'image/png'
+            } elseif (($AttachmentFile.Extension -eq '.jpg') -or ($AttachmentFile.Extension -eq '.jpeg')) {
+                $AttachmentItem.contentType = 'image/jpeg'
+            } elseif ($AttachmentFile.Extension -eq '.gif') {
+                $AttachmentItem.contentType = 'image/gif'
+            }
+        } else {
+            $AttachmentItem.size = $($Bytes.Length)
         }
         Write-Debug "Generated attachment item $($AttachmentItem | ConvertTo-JSON)"
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
@@ -50,9 +59,12 @@ function New-MSGraphMailAttachment {
                 } else {
                     $RequestURI.Path = "v1.0/users/$($Mailbox)/messages/$($MessageID)/attachments/createUploadSession"
                 }
+                $SessionAttachmentItem = @{
+                    AttachmentItem = $AttachmentItem
+                }
                 $UploadSessionParams = @{
                     URI = $RequestURI.ToString()
-                    Body = $AttachmentItem
+                    Body = $SessionAttachmentItem
                     ContentType = 'application/json'
                     Raw = $False
                 }
@@ -121,14 +133,10 @@ function New-MSGraphMailAttachment {
             } else {
                 $RequestURI.Path = "v1.0/users/$($Mailbox)/messages/$($MessageID)/attachments"
             }
-            $SimpleAttachment = @{
-                '@odata.type' = '#microsoft.graph.fileAttachment'
-                name = $AttachmentFile.Name
-                contentBytes = [convert]::ToBase64String($Bytes)
-            }
+            $AttachmentItem.contentBytes = [convert]::ToBase64String($Bytes)
             $SimpleAttachmentParams = @{
                 URI = $RequestURI.ToString()
-                Body = $($SimpleAttachment)
+                Body = $($AttachmentItem)
                 ContentType = 'application/json'
                 Raw = $False
             }
