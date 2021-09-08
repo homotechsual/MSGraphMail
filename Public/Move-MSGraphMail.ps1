@@ -22,7 +22,7 @@ function Move-MSGraphMail {
         }
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($Folder) {
-            $RequestURI.Path = "v1.0/users/$($Mailbox)/mailfolders/$($Folder)/messages$($MessageID)/move"
+            $RequestURI.Path = "v1.0/users/$($Mailbox)/mailfolders/$($Folder)/messages/$($MessageID)/move"
         } else {
             $RequestURI.Path = "v1.0/users/$($Mailbox)/messages/$($MessageID)/move"
         }
