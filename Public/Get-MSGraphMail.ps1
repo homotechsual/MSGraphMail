@@ -126,7 +126,6 @@ function Get-MSGraphMail {
                 $Result = [PSCustomObject]@{
                     id = $($Content).id
                     mailbox = $($Content).toRecipients.emailAddress.address
-                    folder = $($Content).parentFolderId
                 }
                 Return $Result
             } elseif ($Summary) {
