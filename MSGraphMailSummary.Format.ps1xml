@@ -27,6 +27,10 @@
                                 <PropertyName>toString</PropertyName>
                             </ListItem>
                             <ListItem>
+                                <Label>CC</Label>
+                                <PropertyName>ccString</PropertyName>
+                            </ListItem>
+                            <ListItem>
                                 <Label>Received</Label>
                                 <PropertyName>receivedDateTime</PropertyName>
                             </ListItem>
