@@ -59,6 +59,7 @@ function New-MSGraphMailAttachment {
                 } else {
                     $RequestURI.Path = "v1.0/users/$($Mailbox)/messages/$($MessageID)/attachments/createUploadSession"
                 }
+                $AttachmentItem.Remove('@odata.type')
                 $SessionAttachmentItem = @{
                     AttachmentItem = $AttachmentItem
                 }
