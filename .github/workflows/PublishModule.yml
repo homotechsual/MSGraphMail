@@ -8,6 +8,7 @@ jobs:
     name: Publish PowerShell Module
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: pcgeek86/publish-powershell-module-action@v20
         with:
           # The NuGet API Key for PowerShell Gallery, with permission to push this module.
