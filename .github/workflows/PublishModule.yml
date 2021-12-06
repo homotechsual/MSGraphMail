@@ -3,8 +3,10 @@ on:
     tags:
       - 'v*'
 jobs:
-  - name: Publish Module to PowerShell Gallery
-    uses: pcgeek86/publish-powershell-module-action@v20
-    id: publish-module
-    with:
-      NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
+  publish-module:
+    name: Publish Module to PowerShell Gallery
+    steps: 
+      - uses: pcgeek86/publish-powershell-module-action@v20
+        id: publish-module
+        with:
+          NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
