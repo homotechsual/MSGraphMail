@@ -1,5 +1,7 @@
 # MS Graph Mail - A pure-PowerShell Graph API mail client
 
+![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/MSGraphMail?style=for-the-badge) ![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/MSGraphMail?style=for-the-badge)
+
 ## Preparations
 
 You will need the following:

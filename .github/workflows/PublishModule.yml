@@ -2,13 +2,22 @@ on:
   push:
     tags: 
       - "v*"
-name: Publish Module to PowerShell Gallery
+name: Build and Publish Module
 jobs:
+  build: 
+    name: Build PowerShell Module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set required Powershell modules
+        id: psmodulecache
+        uses: potatoqualitee/psmodulecache@v1
+        with:
+          modules-to-cache: Pester, PSSCriptAnalyzer, InvokeBuild, platyPS
   publish-module:
     name: Publish PowerShell Module
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: pcgeek86/publish-powershell-module-action@v20
         with:
           # The NuGet API Key for PowerShell Gallery, with permission to push this module.
