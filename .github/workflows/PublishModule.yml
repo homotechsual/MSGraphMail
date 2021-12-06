@@ -1,12 +1,14 @@
 on:
   push:
-    tags:
-      - 'v*'
+    tags: 
+      - "v*"
+name: Publish Module to PowerShell Gallery
 jobs:
   publish-module:
-    name: Publish Module to PowerShell Gallery
-    steps: 
+    name: Publish PowerShell Module
+    runs-on: ubuntu-latest
+    steps:
       - uses: pcgeek86/publish-powershell-module-action@v20
-        id: publish-module
         with:
+          # The NuGet API Key for PowerShell Gallery, with permission to push this module.
           NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
