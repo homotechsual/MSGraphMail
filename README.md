@@ -10,7 +10,7 @@ You will need the following:
 2. An **Azure AD Application Secret**
 3. An **Azure AD Tenant ID**
 4. [**PowerShell 7**](https://aka.ms/powershell-release?tag=stable) installed on your Windows, Linux or MacOS device.
-5. The code from this module in your PowerShell modules folder find this by running `$env:PSModulePath` in your PowerShell 7 session.
+5. The code from this module in your PowerShell modules folder find this by running `$env:PSModulePath` in your PowerShell 7 session. Install from PSGallery with `Install-Module MSGraphMail`
 
 ## Import the Module
 
