@@ -10,10 +10,10 @@ function New-MSGraphMailBody {
     )
     if (Test-Path $BodyContent) {
         $MailContent = (Get-Content $BodyContent -Raw)
-    }
+    } else { $MailContent = $BodyContent
     if (Test-Path $FooterContent) {
         $MailFooter = (Get-Content $FooterContent -Raw)
-    }
+    } else { $MailFooter = $FooterContent }
     $MailBody = @{
         content = "$($MailContent)$([System.Environment]::NewLine)$($MailFooter)"
         contentType = $BodyFormat
