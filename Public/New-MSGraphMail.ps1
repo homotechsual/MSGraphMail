@@ -57,16 +57,22 @@ function New-MSGraphMail {
         }
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($Folder) {
+            $MessageBody = $MailParams
             $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/mailfolders/$($Folder)/messages"
         } elseif ($Send) {
+            $MessageBody = @{
+                message = $MailParams
+                saveToSentItems = $true
+            }
             $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/sendmail"
         } else {
+            $MessageBody = $MailParams
             $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/messages"
         }
         $POSTRequestParams = @{
             URI = $RequestURI.ToString()
             ContentType = 'application/json'
-            Body = $MailParams
+            Body = $MessageBody
         }
         $Message = New-MSGraphMailPOSTRequest @POSTRequestParams
         Write-Debug "Microsoft Graph returned $($Message)"
