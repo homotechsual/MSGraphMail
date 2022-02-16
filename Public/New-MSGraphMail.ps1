@@ -20,7 +20,8 @@ function New-MSGraphMail {
         [Switch]$RequestDeliveryReceipt,
         [Switch]$RequestReadReceipt,
         [Switch]$Pipeline,
-        [Switch]$Send
+        [Switch]$Send,
+        [Switch]$SaveandSend
     )
     try {
         $CommandName = $MyInvocation.InvocationName
@@ -57,6 +58,8 @@ function New-MSGraphMail {
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($Folder) {
             $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/mailfolders/$($Folder)/messages"
+        } elseif ($Send) {
+            $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/sendmail"
         } else {
             $RequestURI.Path = "v1.0/users/$($MailFrom.EmailAddress.Address)/messages"
         }
@@ -94,7 +97,7 @@ function New-MSGraphMail {
                 folder = $($Message).parentFolderId
             }
             Return $Result
-        } elseif ($Send) {
+        } elseif ($SaveandSend) {
             $SendParams = @{
                 MessageID = $($Message).id
                 Mailbox = $MailFrom.EmailAddress.Address
