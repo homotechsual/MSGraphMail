@@ -55,8 +55,8 @@ function Invoke-MSGraphWebRequest {
         $WebRequestParams = @{
             URI = $URI
             Method = $Method
-            ContentType = $ContentType
-            Headers = $RequestHeaders
+            ContentType          = 'application/json; charset=utf-8'
+            Headers              = $RequestHeaders
             SkipHeaderValidation = $SkipHeaderValidation
         }
         if ($Body -and (($Method -eq 'POST') -or ($Method -eq 'PUT'))) {
