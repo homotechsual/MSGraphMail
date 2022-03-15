@@ -14,7 +14,6 @@ function Send-MSGraphMail {
         [string]$Folder
     )
     try {
-        $CommandName = $MyInvocation.InvocationName
         $RequestURI = [System.UriBuilder]::New('https', 'graph.microsoft.com')
         if ($Folder) {
             $RequestURI.Path = "v1.0/users/$($Mailbox)/mailfolders/$($Folder)/messages/$($MessageID)/send"
@@ -23,7 +22,7 @@ function Send-MSGraphMail {
         }
         $POSTRequestParams = @{
             URI = $RequestURI.ToString()
-            ContentType = 'application/json'
+            ContentType = 'application/json; charset=utf-8'
         }
         $Message = New-MSGraphMailPOSTRequest @POSTRequestParams
         Write-Debug "Microsoft Graph returned $($Message)"
@@ -31,18 +30,6 @@ function Send-MSGraphMail {
             Write-CustomMessage -Message "Sent message '$($Message.subject)' with ID $($Message.id)" -Type 'Success'
         }
     } catch {
-        $Command = $CommandName -Replace '-', ''
-        $ErrorRecord = @{
-            ExceptionType = 'System.Exception'
-            ErrorMessage = "$($CommandName) failed."
-            InnerException = $_.Exception
-            ErrorID = "MicrosoftGraph$($Command)CommandFailed"
-            ErrorCategory = 'ReadError'
-            TargetObject = $_.TargetObject
-            ErrorDetails = $_.ErrorDetails
-            BubbleUpDetails = $True
-        }
-        $CommandError = New-MSGraphErrorRecord @ErrorRecord
-        $PSCmdlet.ThrowTerminatingError($CommandError)
+        New-MSGraphError $_
     }
 }

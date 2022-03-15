@@ -1,10 +1,10 @@
 function Invoke-EmailObjectParser {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory=$True)]
+        [Parameter(Mandatory = $True)]
         [Object[]]$Objects
     )
-    # Loop over each email string and add it to a hashtable in the expected format for an IMicrosoftGraphRecipient[] object.
+    # Loop over each email object and add it to a string.
     Write-Debug "Email object parser received $($Objects | ConvertTo-Json)"
     $EmailAddresses = foreach ($EmailObject in $Objects) {
         $Name = $EmailObject.emailAddress.Name

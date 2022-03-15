@@ -55,10 +55,11 @@ function Invoke-MSGraphWebRequest {
         $WebRequestParams = @{
             URI = $URI
             Method = $Method
-            ContentType          = 'application/json; charset=utf-8'
+            ContentType          = $ContentType
             Headers              = $RequestHeaders
             SkipHeaderValidation = $SkipHeaderValidation
         }
+        Write-Debug "Request parameters: $($WebRequestParams | Out-String -Width 5000)"
         if ($Body -and (($Method -eq 'POST') -or ($Method -eq 'PUT'))) {
             $WebRequestParams.Body = $Body
         }
@@ -67,17 +68,6 @@ function Invoke-MSGraphWebRequest {
         Write-Debug "Raw response: $($Response | Out-String -Width 5000)"
         return $Response
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Net.Http.HttpRequestException'
-            ErrorMessage = "Microsoft Graph API request $($_.TargetObject.Method) $($_.TargetObject.RequestUri) failed."
-            InnerException = $_.Exception
-            ErrorID = 'MicrosoftGraphRequestFailed'
-            ErrorCategory = 'ProtocolError'
-            TargetObject = $_.TargetObject
-            ErrorDetails = $_.ErrorDetails
-            BubbleUpDetails = $True
-        }
-        $RequestError = New-MSGraphErrorRecord @ErrorRecord
-        $PSCmdlet.ThrowTerminatingError($RequestError)
+        New-MSGraphError $_
     }
 }

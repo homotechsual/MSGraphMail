@@ -1,14 +1,14 @@
 function Invoke-EmailStringParser {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory=$True)]
+        [Parameter(Mandatory = $True)]
         [String[]]$Strings
     )
     # Split input string on ";" character.
     if ($Strings.Length -ge 2) {
         $EmailStrings = $Strings
     } else {
-        $EmailStrings = $Strings.Split(";")
+        $EmailStrings = $Strings.Split(';')
     }
     # Loop over each email string and add it to a hashtable in the expected format for an IMicrosoftGraphRecipient[] object.
     $EmailAddresses = foreach ($EmailString in $EmailStrings) {
@@ -19,11 +19,13 @@ function Invoke-EmailStringParser {
         # Add the email address in the expected format for an IMicrosoftGraphEmailAddress object.
         $EmailAddress = @{
             'emailAddress' = @{
-                name = $Name
+                name    = $Name
                 address = $Address
             }
         }
         $EmailAddress
     }
+    Write-Verbose "Got $($EmailAddresses.Length) email addresses"
+    Write-Verbose ($EmailAddresses | ConvertTo-Json)
     return $EmailAddresses
 }

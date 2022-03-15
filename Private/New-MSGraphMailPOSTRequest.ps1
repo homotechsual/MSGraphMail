@@ -36,10 +36,16 @@ function New-MSGraphMailPOSTRequest {
             Uri = $URI
             ContentType = $ContentType
             Anonymous = $Anonymous
-            Body = ($Body | ConvertTo-JSON -Depth 15)
             AdditionalHeaders = $AdditionalHeaders
         }
-        #Write-Debug "Building new Microsoft Graph POST request with body: $($WebRequestParams | Out-String -Width 5000)"
+        if ($ContentType -like 'application/json*' -and $Body) {
+            $WebRequestParams.Body = ConvertTo-Json -InputObject $Body -Depth 5
+        }
+        if ($ContentType -eq 'text/plain' -and $Body) {
+            $WebRequestParams.Body = $Body
+        }
+        Write-Debug "Building new Microsoft Graph POST request with body: $($WebRequestParams | Out-String -Width 5000)"
+        Write-Verbose "Using Content-Type: $($WebRequestParams.ContentType)"
         $Result = Invoke-MSGraphWebRequest @WebRequestParams
         if ($Result) {
             if ($Raw) {
@@ -51,17 +57,6 @@ function New-MSGraphMailPOSTRequest {
             Throw 'No response to POST request'
         }
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Net.Http.HttpRequestException'
-            ErrorMessage = 'POST request sent to the Microsoft Graph API failed.'
-            InnerException = $_.Exception
-            ErrorID = 'MSGraphMailPostRequestFailed'
-            ErrorCategory = 'ProtocolError'
-            TargetObject = $_.TargetObject
-            ErrorDetails = $_.ErrorDetails
-            BubbleUpDetails = $True
-        }
-        $RequestError = New-MSGraphErrorRecord @ErrorRecord
-        $PSCmdlet.ThrowTerminatingError($RequestError)
+        New-MSGraphError $_
     }
 }
